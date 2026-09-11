@@ -1,0 +1,9 @@
+.build/
+.swiftpm/
+.DS_Store
+shots/
+# Agent wiring written by `droppykit agent`: absolute paths for one Mac.
+.mcp.json
+.cursor/
+AGENTS.md
+CLAUDE.md

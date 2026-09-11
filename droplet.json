@@ -1,0 +1,55 @@
+{
+  "id": "calma",
+  "name": "Calma",
+  "version": "1.0.0",
+  "summary": "Ambient sound and guided breathing in your notch",
+  "description": "Calma plays rain, waves, fire or brown noise from Droppy's shelf, and guides you through a few minutes of breathing when you need to slow down.\n\nThe sound is synthesised live, so it never loops. Start a session and the orb grows as you inhale and settles as you exhale, and the sound follows you: the waves roll in on the inhale and draw back on the exhale.\n\nPick Balance (5-5), Box (4-4-4-4) or Relax (4-7-8) in settings. Finish a session and the notch tells you so, with your streak.",
+  "category": "Productivity",
+  "kit": {
+    "abi": 1,
+    "minAPI": "1.1.0"
+  },
+  "minAppVersion": "15.3.0",
+  "capabilities": [
+    "hud",
+    "expanded-surface",
+    "menu-bar"
+  ],
+  "surfaces": [
+    "shelf-widget",
+    "live-activity",
+    "expanded-surface",
+    "settings-pane",
+    "hud",
+    "menu-bar-extra"
+  ],
+  "icon": "Calma.icon",
+  "creator": {
+    "name": "GeorgeWell",
+    "kind": "community",
+    "url": "https://github.com/georgewell130178",
+    "avatar": "Creator.png"
+  },
+  "source": {
+    "repository": "https://github.com/georgewell130178/calma-droplet",
+    "commit": "",
+    "license": "MIT"
+  },
+  "screenshots": [
+    "shelf.png",
+    "panel.png",
+    "notch.png",
+    "complete.png",
+    "menubar.png"
+  ],
+  "keywords": [
+    "breathing",
+    "meditation",
+    "ambient",
+    "rain",
+    "waves",
+    "white noise",
+    "focus",
+    "sleep"
+  ]
+}
