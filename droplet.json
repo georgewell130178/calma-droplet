@@ -7,7 +7,7 @@
   "category": "Productivity",
   "kit": {
     "abi": 1,
-    "minAPI": "1.1.0"
+    "minAPI": "1.6.0"
   },
   "minAppVersion": "15.3.0",
   "capabilities": [
@@ -28,11 +28,11 @@
     "name": "GeorgeWell",
     "kind": "community",
     "url": "https://github.com/georgewell130178",
-    "avatar": "Creator.png"
+    "avatar": "Creator.png",
+    "gitlab": "GITLAB_USERNAME_PENDING"
   },
   "source": {
-    "repository": "https://github.com/georgewell130178/calma-droplet",
-    "commit": "0395d0759895f6d916055dbed1b404a3032e062d",
+    "repository": "https://gitlab.com/droppyformac1/droplets/-/tree/main/droplets/calma",
     "license": "MIT"
   },
   "screenshots": [

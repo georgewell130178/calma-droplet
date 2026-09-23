@@ -31,7 +31,7 @@ extension CalmaDroplet: ShelfWidgetProviding {
     }
 
     public func makeWidgetView(_ id: ShelfWidgetID, context: ShelfWidgetContext) -> AnyView {
-        AnyView(CalmaWidget(droplet: self, isCompact: context.isCompact))
+        AnyView(CalmaWidget(droplet: self, isCompact: context.isCompact, insets: context.contentInsets))
     }
 }
 
@@ -41,6 +41,11 @@ extension CalmaDroplet: ShelfWidgetProviding {
 private struct CalmaWidget: View {
     @ObservedObject var droplet: CalmaDroplet
     let isCompact: Bool
+    /// The host's own inset for this slot: zero under a notch, where the
+    /// shelf's chrome has already inset the rectangle. A widget that pads
+    /// again sits lower and narrower than the built-in beside it.
+    var insets = EdgeInsets(top: DroppySpacing.mdl, leading: DroppySpacing.mdl,
+                            bottom: DroppySpacing.mdl, trailing: DroppySpacing.mdl)
     var onClose: (() -> Void)?
 
     var body: some View {
@@ -51,7 +56,7 @@ private struct CalmaWidget: View {
                 solo
             }
         }
-        .padding(DroppySpacing.mdl)
+        .padding(insets)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
     }
 
@@ -432,8 +437,9 @@ private struct CompactTrailing: View {
     }
 }
 
-/// The card the compact activity grows into: the orb, what is happening, and
-/// the two controls. Fixed at the host's card height; taller would be clipped.
+/// The card behind the compact row. Since DroppyKit 1.8.1 the host no longer
+/// mounts it — hovering the row opens the shelf instead — so it carries the
+/// state and no controls; the shelf widget and the menu bar hold those.
 private struct ExpandedActivity: View {
     @ObservedObject var droplet: CalmaDroplet
     let context: LiveActivityContext
@@ -447,7 +453,7 @@ private struct ExpandedActivity: View {
                     .font(.system(size: 15, weight: .semibold, design: .rounded))
                     .foregroundStyle(AdaptiveColors.notchSurfacePrimaryText)
                 // The island card is 208pt against 344 on a notch: the
-                // pattern name does not fit beside two controls there.
+                // pattern name does not fit beside the orb there.
                 Text(verbatim: context.availableWidth < 300 ? droplet.shortStatusDetail : droplet.statusDetail)
                     .font(.system(size: 11))
                     .foregroundStyle(AdaptiveColors.notchSurfaceTertiaryText)
@@ -456,22 +462,6 @@ private struct ExpandedActivity: View {
             .lineLimit(1)
 
             Spacer(minLength: 0)
-
-            Button {
-                droplet.togglePlayback()
-            } label: {
-                Image(systemName: droplet.isPlaying ? "pause.fill" : "play.fill")
-            }
-            .buttonStyle(DroppyLiveActivityControlStyle(prominence: .accent))
-            .accessibilityLabel(droplet.isPlaying ? "Pause" : "Play")
-
-            Button {
-                droplet.toggleBreathing()
-            } label: {
-                Image(systemName: droplet.session == nil ? "wind" : "stop.fill")
-            }
-            .buttonStyle(DroppyLiveActivityControlStyle(prominence: .quiet))
-            .accessibilityLabel(droplet.session == nil ? "Start breathing" : "End session")
         }
         .frame(width: context.availableWidth, height: DroppyLiveActivityMetrics.cardContentHeight)
     }

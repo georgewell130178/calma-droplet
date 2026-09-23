@@ -12,7 +12,7 @@ let package = Package(
         .library(name: "Calma", type: .dynamic, targets: ["Calma"])
     ],
     dependencies: [
-        .package(url: "https://gitlab.com/droppyformac1/droppykit.git", from: "1.2.0")
+        .package(url: "https://gitlab.com/droppyformac1/droppykit.git", .upToNextMinor(from: "1.8.1"))
     ],
     targets: [
         .target(
