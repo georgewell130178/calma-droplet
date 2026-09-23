@@ -74,12 +74,12 @@ private struct CalmaWidget: View {
                         } label: {
                             Image(systemName: sound.icon)
                         }
-                        .buttonStyle(CalmaCircleStyle(size: 30, isOn: droplet.isPlaying && droplet.sound == sound))
+                        .buttonStyle(calmaCircleStyle(isOn: droplet.isPlaying && droplet.sound == sound))
                         .help(sound.title)
                         .accessibilityLabel(sound.title)
                     }
                     Spacer(minLength: 0)
-                    PlayButton(droplet: droplet, size: 30)
+                    PlayButton(droplet: droplet, size: 24)
                 }
 
                 VolumeRow(droplet: droplet)
@@ -96,7 +96,7 @@ private struct CalmaWidget: View {
                 Text(verbatim: "Calma")
                     .font(.system(size: 12, weight: .semibold))
                 Spacer(minLength: 0)
-                PlayButton(droplet: droplet, size: 22)
+                PlayButton(droplet: droplet, size: 20)
             }
             .foregroundStyle(AdaptiveColors.notchSurfaceSecondaryText)
 
@@ -136,7 +136,7 @@ private struct CalmaWidget: View {
                 Button(action: onClose) {
                     Image(systemName: "xmark")
                 }
-                .buttonStyle(CalmaCircleStyle(size: 20, isOn: false))
+                .buttonStyle(calmaCircleStyle(isOn: false, size: 20))
                 .accessibilityLabel("Close Calma")
             }
         }
@@ -190,7 +190,7 @@ private struct PlayButton: View {
         } label: {
             Image(systemName: droplet.isPlaying ? "pause.fill" : "play.fill")
         }
-        .buttonStyle(CalmaCircleStyle(size: size, isOn: false))
+        .buttonStyle(calmaCircleStyle(isOn: false, size: size))
         .accessibilityLabel(droplet.isPlaying ? "Pause \(droplet.sound.title)" : "Play \(droplet.sound.title)")
     }
 }
@@ -229,7 +229,7 @@ private struct BreatheButton: View {
             }
             .frame(maxWidth: .infinity)
         }
-        .buttonStyle(CalmaPillStyle(isProminent: droplet.session == nil))
+        .buttonStyle(DroppyAccentButtonStyle(size: .small))
     }
 
     private var label: String {
@@ -308,90 +308,19 @@ private struct LiveOrb: View {
 
 // MARK: - Controls
 
-/// A round control on the dark shelf: card fill at rest, the highlight colour
-/// when on. Separated by fill, never by an outline.
-private struct CalmaCircleStyle: ButtonStyle {
-    let size: CGFloat
-    let isOn: Bool
-
-    func makeBody(configuration: Configuration) -> some View {
-        CalmaCircleBody(configuration: configuration, size: size, isOn: isOn)
-    }
+/// Droppy's own circle control: glass at rest, a solid accent puck for the
+/// sound that is playing. 24pt is the host's size for a control inside a row.
+private func calmaCircleStyle(isOn: Bool, size: CGFloat = 24) -> DroppyCircleButtonStyle {
+    isOn
+        ? DroppyCircleButtonStyle(
+            size: size,
+            destructive: false,
+            solidFill: AdaptiveColors.selectionBlueAuto,
+            foregroundColorOverride: nil
+          )
+        : DroppyCircleButtonStyle(size: size)
 }
 
-private struct CalmaCircleBody: View {
-    let configuration: ButtonStyleConfiguration
-    let size: CGFloat
-    let isOn: Bool
-
-    @State private var isHovering = false
-
-    var body: some View {
-        configuration.label
-            .font(.system(size: size * 0.4, weight: .semibold))
-            .foregroundStyle(AdaptiveColors.notchSurfacePrimaryText)
-            .frame(width: size, height: size)
-            .background(Circle().fill(fill))
-            .scaleEffect(configuration.isPressed ? 0.94 : 1)
-            .animation(DroppyAnimation.press, value: configuration.isPressed)
-            .animation(DroppyAnimation.state, value: isOn)
-            .onHover { hovering in
-                withAnimation(DroppyAnimation.hover) { isHovering = hovering }
-            }
-            .contentShape(Circle())
-    }
-
-    private var fill: Color {
-        if isOn { return AdaptiveColors.selectionBlueAuto }
-        return isHovering || configuration.isPressed
-            ? AdaptiveColors.notchSurfaceCardHoverFill
-            : AdaptiveColors.notchSurfaceCardFill
-    }
-}
-
-/// A full-width pill for the one primary action on the widget.
-private struct CalmaPillStyle: ButtonStyle {
-    let isProminent: Bool
-
-    func makeBody(configuration: Configuration) -> some View {
-        CalmaPillBody(configuration: configuration, isProminent: isProminent)
-    }
-}
-
-private struct CalmaPillBody: View {
-    let configuration: ButtonStyleConfiguration
-    let isProminent: Bool
-
-    @State private var isHovering = false
-
-    private var shape: RoundedRectangle {
-        RoundedRectangle(cornerRadius: DroppyRadius.full, style: .continuous)
-    }
-
-    var body: some View {
-        configuration.label
-            .font(.system(size: 12, weight: .semibold))
-            .foregroundStyle(AdaptiveColors.notchSurfacePrimaryText)
-            .padding(.horizontal, DroppySpacing.md)
-            .frame(height: 26)
-            .background(shape.fill(fill))
-            .scaleEffect(configuration.isPressed ? 0.97 : 1)
-            .animation(DroppyAnimation.hoverQuick, value: configuration.isPressed)
-            .animation(DroppyAnimation.state, value: isProminent)
-            .onHover { hovering in
-                withAnimation(DroppyAnimation.hover) { isHovering = hovering }
-            }
-            .contentShape(shape)
-    }
-
-    private var fill: Color {
-        let active = isHovering || configuration.isPressed
-        if isProminent {
-            return AdaptiveColors.selectionBlueAuto.opacity(active ? 1 : 0.85)
-        }
-        return active ? AdaptiveColors.notchSurfaceCardHoverFill : AdaptiveColors.notchSurfaceCardFill
-    }
-}
 
 // MARK: - Live activity
 
@@ -544,7 +473,7 @@ private struct CalmaMenu: View {
                     } label: {
                         Image(systemName: sound.icon)
                     }
-                    .buttonStyle(MenuChipStyle(isOn: droplet.isPlaying && droplet.sound == sound))
+                    .buttonStyle(calmaCircleStyle(isOn: droplet.isPlaying && droplet.sound == sound, size: 28))
                     .help(sound.title)
                     .accessibilityLabel(sound.title)
                 }
@@ -554,7 +483,7 @@ private struct CalmaMenu: View {
                 } label: {
                     Image(systemName: droplet.isPlaying ? "pause.fill" : "play.fill")
                 }
-                .buttonStyle(MenuChipStyle(isOn: false))
+                .buttonStyle(DroppyCircleButtonStyle(size: 28))
                 .accessibilityLabel(droplet.isPlaying ? "Pause" : "Play")
             }
 
@@ -595,28 +524,6 @@ private struct CalmaMenu: View {
     }
 }
 
-/// A round control for the menu, on the system's own fills rather than the
-/// notch's, because a menu follows the user's appearance.
-private struct MenuChipStyle: ButtonStyle {
-    let isOn: Bool
-
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .font(.system(size: 12, weight: .semibold))
-            .foregroundStyle(isOn ? AdaptiveColors.selectionForegroundAuto : AdaptiveColors.primaryTextAuto)
-            .frame(width: 28, height: 28)
-            .background(
-                Circle().fill(
-                    isOn
-                        ? AdaptiveColors.selectionBlueAuto
-                        : AdaptiveColors.overlayAuto(configuration.isPressed ? 0.16 : 0.08)
-                )
-            )
-            .scaleEffect(configuration.isPressed ? 0.94 : 1)
-            .animation(DroppyAnimation.press, value: configuration.isPressed)
-            .contentShape(Circle())
-    }
-}
 
 // MARK: - Settings pane
 
